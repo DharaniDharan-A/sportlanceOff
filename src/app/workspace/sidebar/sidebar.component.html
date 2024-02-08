@@ -1,0 +1,21 @@
+<div class="d-flex column-direction h-100p">
+  <button (click)="toggleSidebar()">{{isCollapsed?'>>':'Collapse'}}</button>
+  <div class="sidebar d-flex justify-space-between column-direction" [ngClass]="{'collapsed': isCollapsed}">
+    <div class="top-elements">
+      <div class="element" [ngClass]="{'fa-solid fa-person': isCollapsed}"
+        [routerLink]="['/workspace-data/players']">{{!isCollapsed?'Players':''}}</div>
+      <div class="element" [ngClass]="{'fa-solid fa-building': isCollapsed}"
+        [routerLink]="['/workspace-data/clubs']">{{!isCollapsed?'Clubs':''}}</div>
+      <div class="element" [ngClass]="{'fa-solid fa-futbol': isCollapsed}"
+        [routerLink]="['/workspace-data/competitions']">{{!isCollapsed?'Competitions':''}}</div>
+      <div class="element" [ngClass]="{'fa-solid fa-globe': isCollapsed}"
+        [routerLink]="['/workspace-data/countries']">{{!isCollapsed?'Countries':''}}</div>
+      <div class="element" [ngClass]="{'fa-solid fa-medal': isCollapsed}"
+        [routerLink]="['/workspace-data/matches']">{{!isCollapsed?'Mathces':''}}</div>
+    </div>
+    <div class="bottom-elements">
+      <div class="element">Live</div>
+      <div class="element">About</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<app-card *ngIf="EnableCard" [primaryData]="playerData" [MapData]="countryData" [backgroundMap]="'country'" [primaryValue]="'name'"
+    [secondaryValue]="'country'" (selectedValue)="onPlayerSelected($event)"></app-card>
+
+<div class="player-data d-flex h-100p" *ngIf="!EnableCard">
+    Player Data {{selectedData.name}}
+    <iframe src="http://localhost:4200/" title="W3Schools Free Online Web Tutorials" class="h-100p w-100p"></iframe>
+</div>
