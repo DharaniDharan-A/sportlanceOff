@@ -1,5 +1,4 @@
-<app-card *ngIf="EnableCard" [primaryData]="playerData" [MapData]="countryData" [backgroundMap]="'country'" [primaryValue]="'name'"
-    [secondaryValue]="'country'" (selectedValue)="onPlayerSelected($event)"></app-card>
+<app-card *ngIf="EnableCard" [primaryData]="playerData" [MapData]="countryData" [backgroundMap]="'country'" (selectedValue)="onPlayerSelected($event)" [ValueParam]="ValueParam"></app-card>
 
 <div class="player-data d-flex h-100p" *ngIf="!EnableCard">
     Player Data {{selectedData.name}}

@@ -1,12 +1,12 @@
 <div class="card-data-wrapper">
     <div *ngFor="let data of primaryData" class="data-card" (click)="onCardClick(data)">
-        <img class="data-card-background" src="{{getBackground(data)}}" alt="{{data[backgroundMap]}}">
+        <img class="data-card-background">
         <div class="data-card-content">
             <div class="card-image-wrapper">
-                <img src="{{data.image}}" alt="{{data[primaryValue]}}">
+                <img src="{{getImage(data)}}" alt="{{getPrimaryValue(data)}}">
             </div>
-            <div class="value-primary">{{data[primaryValue]}}</div>
-            <div class="value-secondary">{{data[secondaryValue]}}</div>
+            <div class="value-primary">{{getPrimaryValue(data)}}</div>
+            <div class="value-secondary">{{getSecondaryValue(data)}}</div>
         </div>
     </div>
 </div>

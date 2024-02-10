@@ -1,1 +1,1 @@
-<p>countries works!</p>
+<app-card *ngIf="EnableCard" [primaryData]="countryData" [MapData]="countryData" [backgroundMap]="'country'" (selectedValue)="onPlayerSelected($event)" [ValueParam]="ValueParam"></app-card>

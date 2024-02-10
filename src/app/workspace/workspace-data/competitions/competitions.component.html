@@ -1,1 +1,1 @@
-<p>competitions works!</p>
+<app-card *ngIf="EnableCard" [primaryData]="leagueData" [backgroundMap]="'country'" (selectedValue)="onPlayerSelected($event)" [ValueParam]="ValueParam"></app-card>

@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-const apiKey = '207615e179mshb822197e2250486p1498a8jsn3805c0033374';
-const apiUrl = 'https://api-football-v1.p.rapidapi.com/v3/timezone';
+const apiKey = '304711fae6e0c89fb7a175541119cfdb';
+const apiUrl = 'https://v3.football.api-sports.io/teams/countries';
 
 const headers = new HttpHeaders({
   'X-RapidAPI-Key': apiKey,
-  'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com'
+  'X-RapidAPI-Host': 'v3.football.api-sports.io'
 });
 
 const options = { headers: headers };
+
+interface ValueParameters {
+  primaryvalue: string[];
+  secondaryvalue: string[];
+  image: string[];
+}
 
 @Component({
   selector: 'app-players',
@@ -121,18 +127,25 @@ export class PlayersComponent implements OnInit {
 
   selectedData: any = {};
 
+  ValueParam?: ValueParameters;
+
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.EnableCard = true;
-    this.http.get(apiUrl, options).subscribe(
-      (data) => {
-        console.log(data);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    // this.http.get(apiUrl, options).subscribe({
+    //   next: (data) => {
+    //     console.log(data);
+    //   },
+    //   error: (error) => {
+    //     console.error(error);
+    //   }
+    // });
+    this.ValueParam = {
+      primaryvalue: ['name'],
+      secondaryvalue: ['country'],
+      image: ['image']
+    }
   }
 
   getFlag(country: string) {
