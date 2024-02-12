@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DataFetchService } from '../data-fetch.service';
 
 const apiKey = '304711fae6e0c89fb7a175541119cfdb';
-const apiUrl = 'https://v3.football.api-sports.io/teams/countries';
+const apiUrl = 'https://v3.football.api-sports.io/players?league=39&season=2023&page=1';
 
 const headers = new HttpHeaders({
   'X-RapidAPI-Key': apiKey,
@@ -25,111 +26,36 @@ interface ValueParameters {
 
 export class PlayersComponent implements OnInit {
 
-  
-  playerData = [
-    {
-      "name": "Lionel Messi",
-      "position": "Forward",
-      "club": "Paris Saint-Germain",
-      "country": "Argentina",
-      "age": 35,
-      "goals": 700,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Lionel_Messi_WC2022.jpg/220px-Lionel_Messi_WC2022.jpg"
-    },
-    {
-      "name": "Cristiano Ronaldo",
-      "position": "Forward",
-      "club": "Manchester United",
-      "country": "Portugal",
-      "age": 37,
-      "goals": 750,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cristiano_Ronaldo_2018.jpg/220px-Cristiano_Ronaldo_2018.jpg"
-    },
-    {
-      "name": "Kylian Mbappé",
-      "position": "Forward",
-      "club": "Paris Saint-Germain",
-      "country": "France",
-      "age": 24,
-      "goals": 120,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Kylian_Mbapp%C3%A9_2018.jpg/220px-Kylian_Mbapp%C3%A9_2018.jpg"
-    },
-    {
-      "name": "Mohamed Salah",
-      "position": "Forward",
-      "club": "Liverpool",
-      "country": "Egypt",
-      "age": 29,
-      "goals": 150,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Mohamed_Salah_2016.jpg/220px-Mohamed_Salah_2016.jpg"
-    },
-    {
-      "name": "Kevin De Bruyne",
-      "position": "Midfielder",
-      "club": "Manchester City",
-      "country": "Belgium",
-      "age": 31,
-      "assists": 80,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Kevin_de_Bruyne_2018.jpg/220px-Kevin_de_Bruyne_2018.jpg"
-    },
-    {
-      "name": "Neymar Jr.",
-      "position": "Forward",
-      "club": "Paris Saint-Germain",
-      "country": "Brazil",
-      "age": 30,
-      "goals": 90,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Neymar_Jr._2017.jpg/220px-Neymar_Jr._2017.jpg"
-    },
-    {
-      "name": "Sergio Ramos",
-      "position": "Defender",
-      "club": "Paris Saint-Germain",
-      "country": "Spain",
-      "age": 36,
-      "clean_sheets": 120,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Sergio_Ramos_2018.jpg/220px-Sergio_Ramos_2018.jpg"
-    },
-    {
-      "name": "Robert Lewandowski",
-      "position": "Forward",
-      "club": "Bayern Munich",
-      "country": "Poland",
-      "age": 34,
-      "goals": 200,
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Robert_Lewandowski_2018.jpg/220px-Robert_Lewandowski_2018.jpg"
-    },
-    {
-      "name": "Harry Kane",
-      "position": "Forward",
-      "club": "Tottenham Hotspur",
-      "country": "England",
-      "age": 28,
-      "goals": 130
-    },
-    {
-      "name": "Bruno Fernandes",
-      "position": "Midfielder",
-      "club": "Manchester United",
-      "country": "Portugal",
-      "age": 28,
-      "assists": 50
-    }
-  ]
-
-
-  countryData: { [key: string]: string } = {
-    Argentina: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
-    Portugal: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/1200px-Flag_of_Portugal.svg.png'
-  }
-
   EnableCard: boolean = true;
 
   selectedData: any = {};
 
   ValueParam?: ValueParameters;
 
-  constructor(private http: HttpClient) { }
+  jsonData: any[] = [];
+
+  playersData: any[] = [];
+
+  goalsData: any[] = [];
+
+  matchedGoalsdata: any[] = [];
+
+  chartOptions: any = {
+
+  }
+  secondData = {};
+
+  width = '600';
+  height = '400';
+  type = "column3d";
+  dataFormat = "json";
+  dataSource = this.secondData;
+  chartData: { label: string, y: number }[] = [];
+
+  constructor(
+    private http: HttpClient,
+    private DataFetchService: DataFetchService
+  ) { }
 
   ngOnInit(): void {
     this.EnableCard = true;
@@ -142,18 +68,103 @@ export class PlayersComponent implements OnInit {
     //   }
     // });
     this.ValueParam = {
-      primaryvalue: ['name'],
-      secondaryvalue: ['country'],
-      image: ['image']
+      primaryvalue: ['player', 'name'],
+      secondaryvalue: ['player', 'nationality'],
+      image: ['player', 'photo']
     }
-  }
 
-  getFlag(country: string) {
-    return this.countryData[country];
+    this.DataFetchService.getPlayers().subscribe((data: any) => {
+      this.playersData = data;
+    });
+    this.DataFetchService.getGoals().subscribe((data: any) => {
+      this.goalsData = data;
+    });
   }
 
   onPlayerSelected(data: any) {
     this.EnableCard = false;
     this.selectedData = data;
+    this.getPlayersGoals(this.selectedData);
+    this.getPlayersSecondvalue(this.selectedData);
+  }
+
+  getPlayersGoals(selectedValue: any) {
+    this.matchedGoalsdata = this.goalsData.filter(data =>
+      (data?.Player?.toLowerCase().includes(selectedValue?.player?.lastname?.toLowerCase()) ||
+        data?.Player?.toLowerCase().includes(selectedValue?.player?.firstname?.toLowerCase())) &&
+      data?.Nationality?.toLowerCase().includes(selectedValue?.player?.nationality?.toLowerCase())
+    );
+    // this.chartData = this.matchedGoalsdata.map(item => ({
+    //   label: item["Initial Year"].toString(),
+    //   y: item["Stat"]
+    // }));
+    this.chartOptions = {
+      title: {
+        text: "Goal Stats"
+      },
+      data: [{
+        type: "column",
+        dataPoints: []
+      }]
+    };
+    this.chartOptions.data[0].dataPoints = this.matchedGoalsdata.map(item => ({
+      label: item['Initial Year'],
+      y: item.Stat
+    }));
+  }
+
+  getPlayersSecondvalue(selectedValue: any) {
+    this.secondData = {
+      chart: {
+        caption: "Countries with Highest Deforestation Rate",
+        subcaption: "For the year 2023",
+        yaxisname: "Deforested Area{br}(in Hectares)",
+        decimals: "1",
+        theme: "candy"
+      },
+      data: [
+        {
+          label: "Brazil",
+          value: "356287"
+        },
+        {
+          label: "Indonesia",
+          value: "101977"
+        },
+        {
+          label: "DR Congo",
+          value: "94495"
+        },
+        {
+          label: "Angola",
+          value: "48865"
+        },
+        {
+          label: "Tazmania",
+          value: "44962"
+        },
+        {
+          label: "Myanmar",
+          value: "41213"
+        },
+        {
+          label: "Paraguay",
+          value: "36463"
+        },
+        {
+          label: "Bolivia",
+          value: "26915"
+        },
+        {
+          label: "Mozambique",
+          value: "25614"
+        },
+        {
+          label: "Argentina",
+          value: "25602"
+        }
+      ]
+    };
+    this.dataSource = this.secondData;
   }
 }

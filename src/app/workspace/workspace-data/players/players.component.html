@@ -1,6 +1,59 @@
-<app-card *ngIf="EnableCard" [primaryData]="playerData" [MapData]="countryData" [backgroundMap]="'country'" (selectedValue)="onPlayerSelected($event)" [ValueParam]="ValueParam"></app-card>
+<app-card *ngIf="EnableCard" [primaryData]="playersData" [backgroundMap]="'country'"
+    (selectedValue)="onPlayerSelected($event)" [ValueParam]="ValueParam"></app-card>
 
 <div class="player-data d-flex h-100p" *ngIf="!EnableCard">
-    Player Data {{selectedData.name}}
-    <iframe src="http://localhost:4200/" title="W3Schools Free Online Web Tutorials" class="h-100p w-100p"></iframe>
+    <div class="player-data-wrapper d-flex column-direction">
+        <div class="player-basic-data d-flex row-direction">
+            <div class="player-data-image-wrapper">
+                <img class="player-image" src="{{selectedData.player.photo}}" alt="Player Photo">
+            </div>
+            <div class="player-injured" *ngIf="selectedData.player.injured">Injured</div>
+            <div class="player-details">
+                <h1 class="personal-details">Personal Details</h1>
+                <h2 class="player-name">{{selectedData.player.name}}</h2>
+                <div class="player-first-name value">
+                    <div class="player-first-name label">First Name:</div>
+                    {{selectedData.player.firstname}}
+                </div>
+                <div class="player-last-name value">
+                    <div class="player-last-name label">Last Name:</div>
+                    {{selectedData.player.lastname}}
+                </div>
+                <div class="player-age value">
+                    <div class="player-age label">Age:</div>
+                    {{selectedData.player.age}}
+                </div>
+                <div class="player-birth-date value">
+                    <div class="player-birth-date label">Birth Date:</div>
+                    {{selectedData.player.birth.date}}
+                </div>
+                <div class="player-birth-place value">
+                    <div class="player-birth-place label">Birth Place:</div>
+                    {{selectedData.player.birth.place}}
+                </div>
+                <div class="player-birth-country value">
+                    <div class="player-birth-country label">Birth Country:</div>
+                    {{selectedData.player.birth.country}}
+                </div>
+                <div class="player-height value">
+                    <div class="player-height label">Height:</div>
+                    {{selectedData.player.height}}
+                </div>
+                <div class="player-weight value">
+                    <div class="player-weight label">Weight:</div>
+                    {{ selectedData.player.weight}}
+                </div>
+            </div>
+        </div>
+        <div class="player-stats">
+            <div>
+                <canvasjs-chart [options]="chartOptions" [styles]="{width: '500px', height: '360px'}"></canvasjs-chart>
+            </div>
+            <div>
+                <fusioncharts [width]="width" [height]="height" [type]="type" [dataFormat]="dataFormat"
+                    [dataSource]="dataSource">
+                </fusioncharts>
+            </div>
+        </div>
+    </div>
 </div>

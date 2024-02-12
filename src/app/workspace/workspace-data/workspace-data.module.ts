@@ -11,6 +11,14 @@ import { WorkspaceRoutingModule } from '../workspace-routing.module';
 import { RouterModule, Routes } from '@angular/router';
 import { WorkspaceDataComponent } from './workspace-data.component';
 import { CardComponent } from '../card/card.component';
+import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+import { FusionChartsModule} from 'angular-fusioncharts';
+
+import * as FusionCharts from "fusioncharts";
+import * as charts from "fusioncharts/fusioncharts.charts";
+import * as FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
+
+FusionChartsModule.fcRoot(FusionCharts, charts, FusionTheme);
 
 @NgModule({
   declarations: [
@@ -26,7 +34,9 @@ import { CardComponent } from '../card/card.component';
   ],
   imports: [
     CommonModule,
-    WorkspaceRoutingModule
+    WorkspaceRoutingModule,
+    CanvasJSAngularChartsModule,
+    FusionChartsModule
   ]
 })
 export class WorkspaceDataModule { }
