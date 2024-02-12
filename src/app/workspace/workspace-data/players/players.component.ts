@@ -59,7 +59,12 @@ export class PlayersComponent implements OnInit {
 
   }
 
-  secondData = {};
+  penaltiesConceidedData: any[] = [];
+  penaltiesSavedData: any[] = [];
+  penaltiesChartOptions: any = {
+  }
+  matchedpenaltiesConceidedData: any[] = [];
+  matchedpenaltiesSavedData: any[] = [];
 
   fusionChartObject = {
     column3d: {
@@ -78,6 +83,12 @@ export class PlayersComponent implements OnInit {
       width: '600',
       height: '400',
       type: "pie3d",
+      dataFormat: "json"
+    },
+    mssplinearea: {
+      width: '600',
+      height: '400',
+      type: "mssplinearea",
       dataFormat: "json"
     }
   };
@@ -113,9 +124,15 @@ export class PlayersComponent implements OnInit {
     });
     this.DataFetchService.getAppearances().subscribe((data: any) => {
       this.appearanceData = data;
-    })
+    });
     this.DataFetchService.getAssists().subscribe((data: any) => {
       this.assistsData = data;
+    });
+    this.DataFetchService.getPenaltiesConceided().subscribe((data: any) => {
+      this.penaltiesConceidedData = data;
+    });
+    this.DataFetchService.getPenaltiesSaved().subscribe((data: any) => {
+      this.penaltiesSavedData = data;
     })
   }
 
@@ -125,6 +142,7 @@ export class PlayersComponent implements OnInit {
     this.getPlayersGoals(this.selectedData);
     this.getAppearances(this.selectedData);
     this.getAssists(this.selectedData);
+    this.getPenalties(this.selectedData);
   }
 
   getPlayersGoals(selectedValue: any) {
@@ -198,7 +216,6 @@ export class PlayersComponent implements OnInit {
       (data?.Player?.toLowerCase().includes(selectedValue?.player?.name?.toLowerCase())) &&
       data?.Nationality?.toLowerCase().includes(selectedValue?.player?.nationality?.toLowerCase())
     );
-    console.log(this.matchedAssistsData);
     this.assistsChartOptions = {
       chart: {
         caption: "Assists",
@@ -225,5 +242,71 @@ export class PlayersComponent implements OnInit {
         return true;
       }
     });
+  }
+
+  getPenalties(selectedValue: any) {
+    this.matchedpenaltiesConceidedData = this.penaltiesConceidedData.filter(data =>
+      (data?.Player?.toLowerCase().includes(selectedValue?.player?.name?.toLowerCase())) &&
+      data?.Nationality?.toLowerCase().includes(selectedValue?.player?.nationality?.toLowerCase())
+    );
+    this.matchedpenaltiesSavedData = this.penaltiesSavedData.filter(data =>
+      (data?.Player?.toLowerCase().includes(selectedValue?.player?.name?.toLowerCase())) &&
+      data?.Nationality?.toLowerCase().includes(selectedValue?.player?.nationality?.toLowerCase())
+    );
+    console.log(this.matchedpenaltiesConceidedData, this.matchedpenaltiesSavedData);
+    this.penaltiesChartOptions = {
+      chart: {
+        caption: "Penalties",
+        yaxisname: "Number of penalties",
+        // numbersuffix: "M",
+        subcaption: "(Conceided Vs Saved)",
+        yaxismaxvalue: "6",
+        plottooltext:
+          selectedValue?.player?.name + " $seriesName penalty <b>$dataValue</b> times in $label",
+        theme: "fusion"
+      },
+      categories: [
+        {
+          category: []
+        }
+      ],
+      dataset: [
+        {
+          seriesname: "Conceided",
+          data: []
+        },
+        {
+          seriesname: "Saved",
+          data: []
+        }
+      ]
+    };
+    (this.penaltiesChartOptions as any)['dataset'][0]['data'] = this.matchedpenaltiesConceidedData.map(item => ({
+      "value": item.Stat.toString()
+    }));
+    (this.penaltiesChartOptions as any)['dataset'][1]['data'] = this.matchedpenaltiesSavedData.map(item => ({
+      "value": item.Stat.toString()
+    }));
+
+    let uniqueLabels = new Set();
+    let conceidedCategories = this.matchedpenaltiesConceidedData.map(item => ({
+      "label": item['Initial Year'].toString()
+    }));
+
+    let savedCategories = this.matchedpenaltiesSavedData.map(item => ({
+      "label": item['Initial Year'].toString()
+    }));
+
+    let mergedCategories = [...conceidedCategories, ...savedCategories].filter(item => {
+      if (uniqueLabels.has(item.label)) {
+        return false;
+      } else {
+        uniqueLabels.add(item.label);
+        return true;
+      }
+    });
+
+    (this.penaltiesChartOptions as any)['categories'][0]['category'] = mergedCategories;
+
   }
 }

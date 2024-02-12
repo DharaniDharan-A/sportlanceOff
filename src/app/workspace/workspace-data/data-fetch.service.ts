@@ -29,6 +29,10 @@ export class DataFetchService {
 
   private assists = 'assets/assists.json';
 
+  private penaltiesConceded = 'assets/penaltiesConceided.json';
+
+  private penaltiesSaved = 'assets/penaltiesSaved.json';
+
   constructor(private http: HttpClient) { }
 
   getLeagues(): Observable<any> {
@@ -56,5 +60,13 @@ export class DataFetchService {
 
   getAssists(): Observable<any> {
     return this.http.get(this.assists);
+  }
+
+  getPenaltiesConceided(): Observable<any> {
+    return this.http.get(this.penaltiesConceded);
+  }
+
+  getPenaltiesSaved(): Observable<any> {
+    return this.http.get(this.penaltiesSaved);
   }
 }
