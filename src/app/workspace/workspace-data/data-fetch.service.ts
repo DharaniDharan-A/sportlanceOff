@@ -25,6 +25,10 @@ export class DataFetchService {
 
   private aerialBattlesUrl = 'assets/aerialbattleslost.json';
 
+  private appearances = 'assets/appearances.json';
+
+  private assists = 'assets/assists.json';
+
   constructor(private http: HttpClient) { }
 
   getLeagues(): Observable<any> {
@@ -44,5 +48,13 @@ export class DataFetchService {
 
   getAerialBattles(): Observable<any> {
     return this.http.get(this.aerialBattlesUrl);
+  }
+
+  getAppearances(): Observable<any> {
+    return this.http.get(this.appearances);
+  }
+
+  getAssists(): Observable<any> {
+    return this.http.get(this.assists);
   }
 }

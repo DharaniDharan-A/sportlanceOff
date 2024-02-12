@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DataFetchService } from '../data-fetch.service';
 
 const apiKey = '304711fae6e0c89fb7a175541119cfdb';
-const apiUrl = 'https://v3.football.api-sports.io/players?league=39&season=2023&page=1';
+const apiUrl = 'https://v3.football.api-sports.io/players?league=39&season=2023&page=2';
 
 const headers = new HttpHeaders({
   'X-RapidAPI-Key': apiKey,
@@ -40,110 +40,48 @@ export class PlayersComponent implements OnInit {
 
   matchedGoalsdata: any[] = [];
 
-  chartOptions: any = {};
+  goalsChartOptions: any = {
+  }
+
+  appearanceData: any[] = [];
+
+  matchedAppearanceData: any[] = [];
+
+  appearanceChartOptions: any = {
+
+  }
+
+  assistsData: any[] = [];
+
+  matchedAssistsData: any[] = [];
+
+  assistsChartOptions: any = {
+
+  }
+
   secondData = {};
 
   fusionChartObject = {
     column3d: {
-      width: '1000',
+      width: '600',
       height: '400',
       type: "column3d",
       dataFormat: "json"
     },
+    line: {
+      width: '600',
+      height: '400',
+      type: "line",
+      dataFormat: "json"
+    },
     pie3d: {
-      width: '1000',
+      width: '600',
       height: '400',
       type: "pie3d",
       dataFormat: "json"
-    },
-  };
-  
-  dataSource = {
-    column3D: {
-      chart: {
-        caption: "Countries with Highest Deforestation Rate",
-        subcaption: "For the year 2023",
-        yaxisname: "Deforested Area{br}(in Hectares)",
-        decimals: "1",
-        theme: "candy"
-      },
-      data: [
-        {
-          label: "Brazil",
-          value: "356287"
-        },
-        {
-          label: "Indonesia",
-          value: "101977"
-        },
-        {
-          label: "DR Congo",
-          value: "94495"
-        },
-        {
-          label: "Angola",
-          value: "48865"
-        },
-        {
-          label: "Tazmania",
-          value: "44962"
-        },
-        {
-          label: "Myanmar",
-          value: "41213"
-        },
-        {
-          label: "Paraguay",
-          value: "36463"
-        },
-        {
-          label: "Bolivia",
-          value: "26915"
-        },
-        {
-          label: "Mozambique",
-          value: "25614"
-        },
-        {
-          label: "Argentina",
-          value: "25602"
-        }
-      ]
-    },
-    pie3D: {
-
-        "chart": {
-            "caption": "Split of Visitors by Age Group",
-            "subCaption": "Last year",
-            "enableSmartLabels": "0",
-            "startingAngle": "0",
-            "showPercentValues": "1",
-            "decimals": "1",
-            "useDataPlotColorForLabels": "1",
-            "theme": "fusion"
-        },
-        "data": [
-            {
-                "label": "Teenage",
-                "value": "1250400"
-            },
-            {
-                "label": "Adult",
-                "value": "1463300"
-            },
-            {
-                "label": "Mid-age",
-                "value": "1050700"
-            },
-            {
-                "label": "Senior",
-                "value": "491000"
-            }
-        ]
-
     }
-
   };
+
   chartData: { label: string, y: number }[] = [];
 
   constructor(
@@ -173,41 +111,119 @@ export class PlayersComponent implements OnInit {
     this.DataFetchService.getGoals().subscribe((data: any) => {
       this.goalsData = data;
     });
+    this.DataFetchService.getAppearances().subscribe((data: any) => {
+      this.appearanceData = data;
+    })
+    this.DataFetchService.getAssists().subscribe((data: any) => {
+      this.assistsData = data;
+    })
   }
 
   onPlayerSelected(data: any) {
     this.EnableCard = false;
     this.selectedData = data;
     this.getPlayersGoals(this.selectedData);
-    this.getPlayersSecondvalue(this.selectedData);
+    this.getAppearances(this.selectedData);
+    this.getAssists(this.selectedData);
   }
 
   getPlayersGoals(selectedValue: any) {
     this.matchedGoalsdata = this.goalsData.filter(data =>
-      (data?.Player?.toLowerCase().includes(selectedValue?.player?.lastname?.toLowerCase()) ||
-        data?.Player?.toLowerCase().includes(selectedValue?.player?.firstname?.toLowerCase())) &&
+      (data?.Player?.toLowerCase().includes(selectedValue?.player?.name?.toLowerCase())) &&
       data?.Nationality?.toLowerCase().includes(selectedValue?.player?.nationality?.toLowerCase())
     );
-    // this.chartData = this.matchedGoalsdata.map(item => ({
-    //   label: item["Initial Year"].toString(),
-    //   y: item["Stat"]
-    // }));
-    this.chartOptions = {
-      title: {
-        text: "Goal Stats"
+    this.goalsChartOptions = {
+      chart: {
+        caption: "Goal Statistics",
+        subcaption: selectedValue.player.name,
+        yaxisname: "Goals{br}(in Numbers)",
+        decimals: "1",
+        enablesmartlabels: "0",
+        theme: "candy",
+        usedataplotcolorforlabels: "1",
+        xaxisname: "Years"
       },
-      data: [{
-        type: "column",
-        dataPoints: []
-      }]
+      data: [
+      ]
     };
-    this.chartOptions.data[0].dataPoints = this.matchedGoalsdata.map(item => ({
-      label: item['Initial Year'],
-      y: item.Stat
-    }));
+    let uniqueLabels = new Set();
+    (this.goalsChartOptions as any)['data'] = this.matchedGoalsdata.map(item => ({
+      "label": item['Initial Year'].toString(),
+      "value": item.Stat.toString()
+    })).filter(item => {
+      if (uniqueLabels.has(item.label)) {
+        return false;
+      } else {
+        uniqueLabels.add(item.label);
+        return true;
+      }
+    });
   }
 
-  getPlayersSecondvalue(selectedValue: any) {
-    this.secondData = this.dataSource.column3D;
+  getAppearances(selectedValue: any) {
+    this.matchedAppearanceData = this.appearanceData.filter(data =>
+      (data?.Player?.toLowerCase().includes(selectedValue?.player?.name?.toLowerCase())) &&
+      data?.Nationality?.toLowerCase().includes(selectedValue?.player?.nationality?.toLowerCase())
+    );
+    this.appearanceChartOptions = {
+      chart: {
+        caption: "Appearances",
+        subcaption: selectedValue.player.name.toString(),
+        decimals: "1",
+        theme: "fusion",
+        enablesmartlabels: "0",
+        usedataplotcolorforlabels: "1",
+        yaxisname: "Appearance in Matches{br}(in Numbers)",
+        xaxisname: "Years"
+      },
+      data: [
+      ]
+    };
+    let uniqueLabels = new Set();
+    (this.appearanceChartOptions as any)['data'] = this.matchedAppearanceData.map(item => ({
+      "label": item['Initial Year'].toString(),
+      "value": item.Stat.toString()
+    })).filter(item => {
+      if (uniqueLabels.has(item.label)) {
+        return false;
+      } else {
+        uniqueLabels.add(item.label);
+        return true;
+      }
+    });
+  }
+
+  getAssists(selectedValue: any) {
+    this.matchedAssistsData = this.assistsData.filter(data =>
+      (data?.Player?.toLowerCase().includes(selectedValue?.player?.name?.toLowerCase())) &&
+      data?.Nationality?.toLowerCase().includes(selectedValue?.player?.nationality?.toLowerCase())
+    );
+    console.log(this.matchedAssistsData);
+    this.assistsChartOptions = {
+      chart: {
+        caption: "Assists",
+        subcaption: selectedValue.player.name.toString(),
+        decimals: "1",
+        theme: "fusion",
+        enablesmartlabels: "0",
+        usedataplotcolorforlabels: "1",
+        yaxisname: "Assists in Matches{br}(in Numbers)",
+        xaxisname: "Years"
+      },
+      data: [
+      ]
+    };
+    let uniqueLabels = new Set();
+    (this.assistsChartOptions as any)['data'] = this.matchedAssistsData.map(item => ({
+      "label": item['Initial Year'].toString(),
+      "value": item.Stat.toString()
+    })).filter(item => {
+      if (uniqueLabels.has(item.label)) {
+        return false;
+      } else {
+        uniqueLabels.add(item.label);
+        return true;
+      }
+    });
   }
 }
