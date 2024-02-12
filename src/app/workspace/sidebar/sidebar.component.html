@@ -1,5 +1,5 @@
 <div class="d-flex column-direction h-100p">
-  <button (click)="toggleSidebar()">{{isCollapsed?'>>':'Collapse'}}</button>
+  <button (click)="toggleSidebar()" >{{isCollapsed?'>>':'Collapse'}}</button>
   <div class="sidebar d-flex justify-space-between column-direction" [ngClass]="{'collapsed': isCollapsed}">
     <div class="top-elements">
       <div class="element" [ngClass]="{'fa-solid fa-person': isCollapsed}"
@@ -11,11 +11,13 @@
       <div class="element" [ngClass]="{'fa-solid fa-globe': isCollapsed}"
         [routerLink]="['/workspace-data/countries']">{{!isCollapsed?'Countries':''}}</div>
       <div class="element" [ngClass]="{'fa-solid fa-medal': isCollapsed}"
-        [routerLink]="['/workspace-data/matches']">{{!isCollapsed?'Mathces':''}}</div>
+        [routerLink]="['/workspace-data/matches']">{{!isCollapsed?'Matches':''}}</div>
     </div>
     <div class="bottom-elements">
-      <div class="element">Live</div>
-      <div class="element">About</div>
+      <div class="element" [ngClass]="{'fa-solid fa-television': isCollapsed}"
+        [routerLink]="['/workspace-data/live']">{{!isCollapsed?'Live':''}}</div>
+      <div class="element" [ngClass]="{'fa-solid fa-address-book': isCollapsed}"
+      [routerLink]="['/workspace-data/about']">{{!isCollapsed?'About':''}}</div>
     </div>
   </div>
 </div>

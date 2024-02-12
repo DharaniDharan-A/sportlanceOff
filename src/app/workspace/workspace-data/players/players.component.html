@@ -47,12 +47,23 @@
         </div>
         <div class="player-stats">
             <div>
-                <canvasjs-chart [options]="chartOptions" [styles]="{width: '500px', height: '360px'}"></canvasjs-chart>
+                <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height: '400px'}"></canvasjs-chart>
             </div>
+
+            <hr>
+
             <div>
-                <fusioncharts [width]="width" [height]="height" [type]="type" [dataFormat]="dataFormat"
-                    [dataSource]="dataSource">
+                <fusioncharts [width]="fusionChartObject.column3d.width" [height]="fusionChartObject.column3d.height" [type]="fusionChartObject.column3d.type" [dataFormat]="fusionChartObject.column3d.dataFormat"
+                    [dataSource]="chartOptions">
                 </fusioncharts>
+
+                <hr>
+
+                <fusioncharts [width]="fusionChartObject.pie3d.width" [height]="fusionChartObject.pie3d.height" [type]="fusionChartObject.pie3d.type" [dataFormat]="fusionChartObject.pie3d.dataFormat"
+                [dataSource]="dataSource.pie3D">
+            </fusioncharts>
+
+
             </div>
         </div>
     </div>

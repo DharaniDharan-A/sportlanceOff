@@ -40,16 +40,110 @@ export class PlayersComponent implements OnInit {
 
   matchedGoalsdata: any[] = [];
 
-  chartOptions: any = {
-
-  }
+  chartOptions: any = {};
   secondData = {};
 
-  width = '600';
-  height = '400';
-  type = "column3d";
-  dataFormat = "json";
-  dataSource = this.secondData;
+  fusionChartObject = {
+    column3d: {
+      width: '1000',
+      height: '400',
+      type: "column3d",
+      dataFormat: "json"
+    },
+    pie3d: {
+      width: '1000',
+      height: '400',
+      type: "pie3d",
+      dataFormat: "json"
+    },
+  };
+  
+  dataSource = {
+    column3D: {
+      chart: {
+        caption: "Countries with Highest Deforestation Rate",
+        subcaption: "For the year 2023",
+        yaxisname: "Deforested Area{br}(in Hectares)",
+        decimals: "1",
+        theme: "candy"
+      },
+      data: [
+        {
+          label: "Brazil",
+          value: "356287"
+        },
+        {
+          label: "Indonesia",
+          value: "101977"
+        },
+        {
+          label: "DR Congo",
+          value: "94495"
+        },
+        {
+          label: "Angola",
+          value: "48865"
+        },
+        {
+          label: "Tazmania",
+          value: "44962"
+        },
+        {
+          label: "Myanmar",
+          value: "41213"
+        },
+        {
+          label: "Paraguay",
+          value: "36463"
+        },
+        {
+          label: "Bolivia",
+          value: "26915"
+        },
+        {
+          label: "Mozambique",
+          value: "25614"
+        },
+        {
+          label: "Argentina",
+          value: "25602"
+        }
+      ]
+    },
+    pie3D: {
+
+        "chart": {
+            "caption": "Split of Visitors by Age Group",
+            "subCaption": "Last year",
+            "enableSmartLabels": "0",
+            "startingAngle": "0",
+            "showPercentValues": "1",
+            "decimals": "1",
+            "useDataPlotColorForLabels": "1",
+            "theme": "fusion"
+        },
+        "data": [
+            {
+                "label": "Teenage",
+                "value": "1250400"
+            },
+            {
+                "label": "Adult",
+                "value": "1463300"
+            },
+            {
+                "label": "Mid-age",
+                "value": "1050700"
+            },
+            {
+                "label": "Senior",
+                "value": "491000"
+            }
+        ]
+
+    }
+
+  };
   chartData: { label: string, y: number }[] = [];
 
   constructor(
@@ -114,57 +208,6 @@ export class PlayersComponent implements OnInit {
   }
 
   getPlayersSecondvalue(selectedValue: any) {
-    this.secondData = {
-      chart: {
-        caption: "Countries with Highest Deforestation Rate",
-        subcaption: "For the year 2023",
-        yaxisname: "Deforested Area{br}(in Hectares)",
-        decimals: "1",
-        theme: "candy"
-      },
-      data: [
-        {
-          label: "Brazil",
-          value: "356287"
-        },
-        {
-          label: "Indonesia",
-          value: "101977"
-        },
-        {
-          label: "DR Congo",
-          value: "94495"
-        },
-        {
-          label: "Angola",
-          value: "48865"
-        },
-        {
-          label: "Tazmania",
-          value: "44962"
-        },
-        {
-          label: "Myanmar",
-          value: "41213"
-        },
-        {
-          label: "Paraguay",
-          value: "36463"
-        },
-        {
-          label: "Bolivia",
-          value: "26915"
-        },
-        {
-          label: "Mozambique",
-          value: "25614"
-        },
-        {
-          label: "Argentina",
-          value: "25602"
-        }
-      ]
-    };
-    this.dataSource = this.secondData;
+    this.secondData = this.dataSource.column3D;
   }
 }
