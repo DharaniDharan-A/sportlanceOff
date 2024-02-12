@@ -23,6 +23,8 @@ export class DataFetchService {
 
   private playersUrl = 'assets/players.json';
 
+  private aerialBattlesUrl = 'assets/aerialbattleslost.json';
+
   constructor(private http: HttpClient) { }
 
   getLeagues(): Observable<any> {
@@ -38,5 +40,9 @@ export class DataFetchService {
 
   getPlayers(): Observable<any> {
     return this.http.get(this.playersUrl);
+  }
+
+  getAerialBattles(): Observable<any> {
+    return this.http.get(this.aerialBattlesUrl);
   }
 }
